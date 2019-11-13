@@ -106,7 +106,7 @@ export default {
             // 存储到本地存储中
             window.localStorage.setItem('user-token', res.data.data.token)
             // 跳转到主页
-            this.$router.push('../home/index.vue')
+            this.$router.push('/home')
           }).catch(res => {
             // 提示信息
             this.$message({
