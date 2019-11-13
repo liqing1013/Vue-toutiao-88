@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- 布局 -->
+    <!-- 布局大容器 -->
     <el-container>
       <!-- 左侧布局 -->
       <el-aside class="left" style='width:220px'>
