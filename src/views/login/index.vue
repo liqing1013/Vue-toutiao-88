@@ -103,6 +103,9 @@ export default {
             method: 'post'
           }).then(res => {
             console.log(res.data)
+            // 存储到本地存储中
+            window.localStorage.setItem('user-token', res.data.data.token)
+            // 跳转到主页
           })
         }
       })
