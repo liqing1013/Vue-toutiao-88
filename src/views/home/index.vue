@@ -34,11 +34,12 @@
       <!-- 右侧大容器 -->
       <el-container>
         <!-- 头部 -->
-        <el-header>头</el-header>
+        <el-header>
+          <layoutHeader></layoutHeader>
+        </el-header>
         <!-- 下面主体-二级容器 -->
         <el-main>
           <!-- 二级路由容器 -->
-          容器
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -47,7 +48,12 @@
 </template>
 
 <script>
-export default {}
+import layoutHeader from '../../components/layout-header'
+export default {
+  components: {
+    layoutHeader
+  }
+}
 </script>
 <style lang="less" scoped>
 .left {
