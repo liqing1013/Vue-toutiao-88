@@ -60,7 +60,7 @@ const router = new VueRouter({
 /// / next()-放行到要访问的页面
 /// / next('/login)-跳转到指定路由
 /// / next(false)-停止导航：在一些特殊情况下停留在当前页面，终断当前导航
-/// / 1、具体要做的：判断用户得登录状态，悠久通过，没有跳转到登录页
+/// / 1、具体要做的：判断用户得登录状态，永久通过，没有跳转到登录页
 router.beforeEach((to, from, next) => {
   // 开启顶部导航进度条
   Nprogress.start()
@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-// 路由导航结束以后出发钩子函数
+// 路由导航结束以后触发钩子函数
 router.afterEach((to, from) => {
   Nprogress.done()
 })
