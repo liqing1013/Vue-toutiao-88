@@ -17,7 +17,7 @@
           <!-- bidirectional data binding（双向数据绑定） -->
           <quill-editor v-model="article.content"
                         ref="myQuillEditor"
-                        :options='{ editorOption }'
+                        :options='editorOption'
                         row=20
                         >
           </quill-editor>
@@ -28,7 +28,7 @@
             <el-option label="所有频道" :value="null"></el-option>
             <el-option
             :label="channel.name"
-            :value="channel.name"
+            :value="channel.id"
             v-for="channel in channels"
             :key='channel.id'
             ></el-option>
@@ -37,8 +37,8 @@
         <el-divider></el-divider>
         <!-- 发表/存入草稿 -->
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">发表</el-button>
-          <el-button>存入草稿</el-button>
+          <el-button type="primary" @click="onSubmit(false)">发表</el-button>
+          <el-button @click="onSubmit(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -50,6 +50,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
+
 export default {
   name: 'publish',
   components: {
@@ -64,7 +65,10 @@ export default {
       article: {
         title: '', // 文章标题
         content: '', // 文章内容
-        // cover: '',//封面
+        cover: {
+          type: 0,
+          images: []
+        }, // 封面
         channel_id: null // 文章所属频道
       },
       // 符文本编辑器的配置对象
@@ -75,7 +79,26 @@ export default {
   },
   methods: {
     // 发布文章
-    onSubmit () {
+    onSubmit (draft) {
+      // 获取token值，判断身份
+      const token = window.localStorage.getItem('user-token')
+      this.$axios({
+        method: 'POST',
+        url: '/articles',
+        // headers
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        // Query
+        params: {
+          draft
+        },
+        data: this.article
+      }).then(res => {
+        console.log(res)
+      }).catch(res => {
+        console.log(res)
+      })
     },
     // 获取频道列表数据
     loadChannels () {
@@ -83,7 +106,7 @@ export default {
         mothod: 'GET',
         url: '/channels'
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.channels = res.data.data.channels
       })
     }
