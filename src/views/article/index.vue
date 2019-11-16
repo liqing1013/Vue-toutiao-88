@@ -38,7 +38,8 @@
     <!-- 文章列表 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>共找到59898条符合条件的内容</span>
+        <!-- <span>共找到59898条符合条件的内容</span> -->
+        <span>共找到{{ totalCount }}条符合条件的内容</span>
       </div>
       <div>
         <!-- 当el-table 表格组件
@@ -48,7 +49,7 @@
         <!-- el-table-column表格列组件，
               prop用来指定渲染哪个数据字段
         -->
-        <el-table :data="articles" style="width: 100%">
+        <el-table v-loading="loading" :data="articles" style="width: 100%">
           <el-table-column prop="date" label="封面" width="180">
             <!-- 自定义表格列
               在template上声明 slot-scope='scope',然后就可以通过scope.row获取遍历项
@@ -80,6 +81,18 @@
         </el-table>
       </div>
     </el-card>
+
+    <!-- 页面分页 -->
+    <!-- loading状态时，页码禁用，disabled控制页码的使用状态 -->
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="totalCount"
+      @current-change='onPageChange'
+      :disabled="loading"
+      >
+    </el-pagination>
+
   </div>
 </template>
 
@@ -104,6 +117,7 @@ export default {
       rangeDate: '',
       // 文章列表
       articles: [],
+      // 审核状态样式
       Articlestatus: [
         {
           type: '',
@@ -125,15 +139,23 @@ export default {
           type: 'info',
           label: '已删除'
         }
-      ]
+      ],
+      // 总记录数
+      totalCount: 0,
+      // 表格loding状态
+      loading: false
     }
   },
   created () {
-    this.loadArticles()
+    // 初始化加载时加载第一页
+    this.loadArticles(1)
   },
   methods: {
     // 调用接口，获取后台文章列表数据
-    loadArticles () {
+    // page如果没传，就默认是1
+    loadArticles (page = 1) {
+      // 页面渲染时loading为true，运行
+      this.loading = true
       // 获取token值，判断身份
       const token = window.localStorage.getItem('user-token')
       console.log('令牌', token)
@@ -146,15 +168,32 @@ export default {
           // 后端要求把token放到请求头中，
           // Authorization: `Bearer ${token}`
           Authorization: `Bearer ${token}`
+        },
+        // Query参数使用params传递
+        params: {
+          // 页码
+          page,
+          // 每页几条
+          per_page: 15
+
         }
+      }).then(res => {
+        console.log(res)
+        // 跟新文章列表
+        this.articles = res.data.data.results
+        // 更新文章记录总数
+        this.totalCount = res.data.data.total_count
+      }).catch(res => {
+        console.log(res, '获取数据失败')
+      }).finally(() => {
+        // 无论成功还是失败，最终都要执行
+        this.loading = false
       })
-        .then(res => {
-          console.log(res)
-          this.articles = res.data.data.results
-        })
-        .catch(res => {
-          console.log(res, '获取数据失败')
-        })
+    },
+    // 页码改变时调用此函数
+    onPageChange (page) {
+      // 请求加载指定页码的文章列表
+      this.loadArticles(page)
     }
   }
 }
