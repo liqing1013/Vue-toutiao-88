@@ -89,9 +89,10 @@
           </el-table-column>
           <el-table-column prop="pubdate" label="发布日期" width="180"></el-table-column>
           <el-table-column prop="address" label="操作">
-            <el-row>
-              <el-button type="primary" icon="el-icon-edit" circle></el-button>
-              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            <el-row slot-scope="scope">
+              <!--  -->
+              <el-button type="primary" icon="el-icon-edit" circle >编辑</el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="onDelete(scope.row.id)">删除</el-button>
             </el-row>
           </el-table-column>
         </el-table>
@@ -158,7 +159,10 @@ export default {
       totalCount: 0,
       // 表格loding状态
       loading: true,
-      channels: []
+      // 频道列表
+      channels: [],
+      // 记录当前页码
+      inpage: 1
     }
   },
   // 初始化加载时加载第一页
@@ -176,7 +180,6 @@ export default {
       this.loading = true
       // 获取token值，判断身份
       const token = window.localStorage.getItem('user-token')
-      console.log('令牌', token)
       this.$axios({
         method: 'GET',
         url: '/articles',
@@ -207,7 +210,7 @@ export default {
         }
       })
         .then(res => {
-          console.log(res)
+          // console.log(res)
           // 跟新文章列表
           this.articles = res.data.data.results
           // 更新文章记录总数
@@ -223,6 +226,7 @@ export default {
     },
     // 页码改变时调用此函数
     onPageChange (page) {
+      this.inpage = page
       // 请求加载指定页码的文章列表
       this.loadArticles(page)
     },
@@ -234,12 +238,28 @@ export default {
         url: '/channels'
       })
         .then(res => {
-          console.log(res)
+          // console.log(res)
           this.channels = res.data.data.channels
         })
         .catch(res => {
           console.log(res)
         })
+    },
+    // 删除文章
+    onDelete (articleId) {
+      const token = window.localStorage.getItem('user-token')
+      this.$axios({
+        method: 'DELETE',
+        url: `/articles/${articleId}`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(res => {
+        console.log(res)
+        this.loadArticles(this.inpage)
+      }).catch(res => {
+        console.log(res)
+      })
     }
   }
 }
