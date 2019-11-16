@@ -28,7 +28,7 @@
             <el-option
               v-for="channel in channels"
               :label="channel.name"
-              :value="channel.id"
+              :value="channel.name"
               :key="channel.id"
             ></el-option>
           </el-select>

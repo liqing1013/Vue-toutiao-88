@@ -6,7 +6,6 @@ import Login from '../views/login'
 import Home from '@/views/home'
 import Article from '@/views/article'
 import Publish from '@/views/publish'
-
 // 加载 nprogress
 import Nprogress from 'nprogress'
 
