@@ -47,7 +47,7 @@
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="loadArticles(1)">查询</el-button>
+          <el-button type="primary" @click="loadArticles()">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -91,7 +91,7 @@
           <el-table-column prop="address" label="操作">
             <el-row slot-scope="scope">
               <!--  -->
-              <el-button type="primary" icon="el-icon-edit" circle >编辑</el-button>
+              <el-button type="primary" icon="el-icon-edit" circle @click="onEdit">编辑</el-button>
               <el-button type="danger" icon="el-icon-delete" circle @click="onDelete(scope.row.id)">删除</el-button>
             </el-row>
           </el-table-column>
@@ -167,7 +167,7 @@ export default {
   },
   // 初始化加载时加载第一页
   created () {
-    this.loadArticles(1)
+    this.loadArticles()
 
     // 加载频道列表
     this.loadChannels()
@@ -175,21 +175,21 @@ export default {
   methods: {
     // 调用接口，获取后台文章列表数据
     // page如果没传，就默认是1
-    loadArticles (page = 1) {
+    loadArticles (page) {
       // 页面渲染时loading为true，运行
       this.loading = true
       // 获取token值，判断身份
-      const token = window.localStorage.getItem('user-token')
+      // const token = window.localStorage.getItem('user-token')
       this.$axios({
         method: 'GET',
         url: '/articles',
-        headers: {
-          // 添加请求头
-          // 名字：值
-          // 后端要求把token放到请求头中，
-          // Authorization: `Bearer ${token}`
-          Authorization: `Bearer ${token}`
-        },
+        // headers: {
+        //   // 添加请求头
+        //   // 名字：值
+        //   // 后端要求把token放到请求头中，
+        //   // Authorization: `Bearer ${token}`
+        //   Authorization: `Bearer ${token}`
+        // },
         // Query参数使用params传递
         params: {
           // 页码
@@ -242,24 +242,29 @@ export default {
           this.channels = res.data.data.channels
         })
         .catch(res => {
-          console.log(res)
+          // console.log(res)
         })
     },
     // 删除文章
     onDelete (articleId) {
-      const token = window.localStorage.getItem('user-token')
+      // const token = window.localStorage.getItem('user-token')
       this.$axios({
         method: 'DELETE',
-        url: `/articles/${articleId}`,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        url: `/articles/${articleId}`
+        // headers: {
+        //   Authorization: `Bearer ${token}`
+        // }
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.loadArticles(this.inpage)
       }).catch(res => {
-        console.log(res)
+        // console.log(res)
       })
+    },
+    // 编辑文章
+    onEdit () {
+      window.alert('124')
+      this.$router.push('/publish')
     }
   }
 }

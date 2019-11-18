@@ -81,14 +81,14 @@ export default {
     // 发布文章
     onSubmit (draft) {
       // 获取token值，判断身份
-      const token = window.localStorage.getItem('user-token')
+      // const token = window.localStorage.getItem('user-token')
       this.$axios({
         method: 'POST',
         url: '/articles',
         // headers
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`
+        // },
         // Query
         params: {
           draft

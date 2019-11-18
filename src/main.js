@@ -22,7 +22,28 @@ axios.defaults.transformResponse = [function (data) {
     return {}
   }
 }]
+
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+  // config代表请求的配置对象，指要发出的配置对象
+  const token = window.localStorage.getItem('user-token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config// 代表通行的规则
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error)
+})
+// // 响应拦截器
+// axios.interceptors.response.use(function (response) {
+//   return response
+// }, function (error) {
+//   return Promise.reject(error)
+// })
+
 Vue.prototype.$axios = axios// 将axios共享到所有的实例接口调用
+// axios请求拦截器和响应拦截器
 Vue.config.productionTip = false
 Vue.use(ElementUi)// 注册全局组件
 new Vue({
